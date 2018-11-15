@@ -20,7 +20,7 @@
     "mkdirp": "0.5.x",
     "opn": "5.4.0",
     "optimist": "0.6.x",
-    "request": "2.x"
+    "request": "^2.88.x"
   },
   "devDependencies": {
     "eslint": "3.x",
@@ -35,8 +35,8 @@
   "preferGlobal": true,
   "bin": {
     "floomatic": "./bin/floomatic",
-    "workspace": "./bin/workspace",
-    "add_checkout_git_hook": "./bin/add_checkout_git_hook.sh"
+    "floobits-workspace": "./bin/workspace",
+    "floobits-checkout-git-hook": "./bin/add_checkout_git_hook.sh"
   },
   "directories": {
     "lib": "./lib"
