@@ -1,6 +1,0 @@
-{
-    "hooks": {
-        "*": "echo HELLO #FLOO_HOOK_FILE"
-    }, 
-    "url": "https://floobits.com/Floobits/floomatic"
-}

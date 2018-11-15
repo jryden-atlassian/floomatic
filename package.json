@@ -14,10 +14,11 @@
     "async": "1.x",
     "dmp": "1.x",
     "floorine": "0.3.x",
+    "httplease": "^0.7.0",
     "lodash": "4.x",
     "minimatch": "3.x",
     "mkdirp": "0.5.x",
-    "open": "0.x",
+    "opn": "5.4.0",
     "optimist": "0.6.x",
     "request": "2.x"
   },
@@ -34,14 +35,17 @@
   },
   "preferGlobal": true,
   "bin": {
-    "floomatic": "./bin/floomatic"
+    "floomatic": "./bin/floomatic",
+    "workspace": "./bin/workspace",
+    "add_checkout_git_hook": "./bin/add_checkout_git_hook.sh"
   },
   "directories": {
     "lib": "./lib"
   },
   "scripts": {
     "lint": "./node_modules/eslint/bin/eslint.js *.js lib/*.js",
-    "start": "./bin/floomatic"
+    "start": "./bin/floomatic",
+    "test": "./tests/test"
   },
   "bugs": {
     "url": "https://github.com/Floobits/floomatic/issues"

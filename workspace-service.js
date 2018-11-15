@@ -40,8 +40,12 @@ function parse_args (floorc) {
     .describe("p", "Port to use. For debugging/development. Defaults to 3448.")
     .describe("verbose", "Enable debugging output.")
     .describe("version", "Print version.")
+    .default("browser", true)
     .describe("no-browser", "Don't try to open the web editor (--read-only mode also enables this)")
     .demand(["H", "p"])
+    .default("D", false)
+    .describe("D", "Delete the specified workspace")
+    .default()
     .argv;
 }
 
@@ -49,7 +53,7 @@ function print_version () {
   console.log(util.format("%s version %s", package_json.name, package_json.version));
 }
 
-exports.run = function () {
+exports.run = async function () {
   const floorc = utils.parse_floorc();
   if (!floorc) {
     process.exit(1);
@@ -123,22 +127,35 @@ exports.run = function () {
   }
   let username;
   let secret;
+  try {
+    username = floorc.auth[args.H].username;
+    secret = floorc.auth[args.H].secret;
+  } catch (e) {
+    log.error("No auth found in ~/.floorc.json for %s", args.H);
+    /*eslint-disable no-process-exit */
+    process.exit(1);
+    /*eslint-enable no-process-exit */
+  }
+
+  if (args.D) {
+    await api.del(args.H, username, args.o, secret, args.w);
+    log.log('Workspace deleted', {owner: args.o, workspace: args.w});
+    process.exit(1);
+  }
+
   let series = [function (cb) { cb(); }];
   if (args.share) {
-    try {
-      username = floorc.auth[args.H].username;
-      secret = floorc.auth[args.H].secret;
-    } catch (e) {
-      log.error("No auth found in ~/.floorc.json for %s", args.H);
-      /*eslint-disable no-process-exit */
-      process.exit(1);
-      /*eslint-enable no-process-exit */
-    }
+
+
     series.push(function (cb) {
-      api.create(args.H, username, args.o, secret, args.w, args.perms, function (err) {
+      if (args.perms) {
+        args.perms = JSON.parse(args.perms);
+      }
+      api.create(args.H, username, args.o, secret, args.w, args.perms, async function (err) {
         if (err && err.statusCode !== 403) {
           return cb(err);
         }
+        await api.hide(args.H, username, args.o, secret, args.w);
         return cb();
       });
     });
@@ -165,18 +182,27 @@ exports.run = function () {
       /*eslint-enable no-process-exit */
     }
 
+
+
     const workspace_url = utils.to_browser_url(args.p === 3448, args.H, args.o, args.w);
-    floo_conn.once("room_info", function () {
+    floo_conn.once("room_info", async function () {
+
+      await new Promise((resolve) => {
+        setTimeout(() => {
+          resolve();
+        }, 5000);
+      });
+
       if (args["read-only"]) {
         log.log("Not opening browser because you don't have permission to write to this workspace.");
-        return;
       }
-      if (args["no-browser"]) {
+      if (!args.browser) {
         log.log("Not opening browser because you specified --no-browser.");
-        return;
+      } else {
+        log.log("Opening browser to %s", workspace_url);
+        open_url(workspace_url);
       }
-      log.log("Opening browser to %s", workspace_url);
-      open_url(workspace_url);
+      process.exit(1);
     });
     log.log("Joining workspace %s", workspace_url);
     floo_conn.connect();
