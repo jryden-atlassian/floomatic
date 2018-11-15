@@ -27,8 +27,7 @@
     "eslint-config-floobits": "*"
   },
   "optionalDependencies": {
-    "fsevents": "1.x",
-    "native-diff-match-patch": "0.x"
+    "fsevents": "1.x"
   },
   "engines": {
     "node": ">=4.0"
