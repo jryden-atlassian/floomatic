@@ -140,7 +140,7 @@ exports.run = async function () {
   if (args.D) {
     await api.del(args.H, username, args.o, secret, args.w);
     log.log('Workspace deleted', {owner: args.o, workspace: args.w});
-    process.exit(1);
+    process.exit(0);
   }
 
   let series = [function (cb) { cb(); }];
@@ -202,7 +202,7 @@ exports.run = async function () {
         log.log("Opening browser to %s", workspace_url);
         open_url(workspace_url);
       }
-      process.exit(1);
+      process.exit(0);
     });
     log.log("Joining workspace %s", workspace_url);
     floo_conn.connect();
