@@ -186,25 +186,23 @@ exports.run = async function () {
 
     const workspace_url = utils.to_browser_url(args.p === 3448, args.H, args.o, args.w);
     floo_conn.once("room_info", async function () {
-
-      await new Promise((resolve) => {
-        setTimeout(() => {
-          resolve();
-        }, 5000);
-      });
-
       if (args["read-only"]) {
         log.log("Not opening browser because you don't have permission to write to this workspace.");
       }
       if (!args.browser) {
         log.log("Not opening browser because you specified --no-browser.");
       } else {
+        await new Promise((resolve) => {
+          setTimeout(() => {
+            resolve();
+          }, 5000);
+        });
         log.log("Opening browser to %s", workspace_url);
         open_url(workspace_url);
       }
       process.exit(0);
     });
-    log.log("Joining workspace %s", workspace_url);
+    log.log("Initial syncing of workspace %s", workspace_url);
     floo_conn.connect();
   });
 };

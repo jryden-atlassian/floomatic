@@ -171,7 +171,7 @@ exports.run = function () {
         log.log("Not opening browser because you don't have permission to write to this workspace.");
         return;
       }
-      if (args["no-browser"]) {
+      if (!args.browser) {
         log.log("Not opening browser because you specified --no-browser.");
         return;
       }
